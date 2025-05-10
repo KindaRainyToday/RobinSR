@@ -8,20 +8,20 @@ from common.structs.relic import SubAffix
 
 
 class BattleType(StrEnum):
-    Default = "Default"
-    Moc = "Moc"
+    DEFAULT = "DEFAULT"
+    MOC = "MOC"
     PF = "PF"
     SU = "SU"
     AS = "AS"
 
     @staticmethod
     def default() -> "BattleType":
-        return BattleType.Default
+        return BattleType.DEFAULT
 
     def to_int(self) -> int:
         return {
-            BattleType.Default: 0,
-            BattleType.Moc: 1,
+            BattleType.DEFAULT: 0,
+            BattleType.MOC: 1,
             BattleType.PF: 2,
             BattleType.SU: 3,
             BattleType.AS: 4,

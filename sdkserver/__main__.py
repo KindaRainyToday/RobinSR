@@ -10,6 +10,7 @@ from common.server_config import HOST, SDKSERVER_PORT
 from sdkserver.config.version_config import VersionConfig, CONFIG_PATH
 from sdkserver.services.auth import auth_router
 from sdkserver.services.dispatch import dispatch_router
+from sdkserver.services.sr_tools import sr_tools_router
 
 
 class AppState:
@@ -53,6 +54,7 @@ if __name__ == "__main__":
     )
     app.include_router(dispatch_router)
     app.include_router(auth_router)
+    app.include_router(sr_tools_router)
 
     h_map = app.state.fuckass.hotfix_map
     h_cnt, h_keys = (len(h_map), h_map.keys())

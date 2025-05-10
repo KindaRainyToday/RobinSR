@@ -1,12 +1,12 @@
 from proto import SceneMonster, SceneMonsterWave, SceneMonsterWaveParam
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class Monster(BaseModel):
     level: int
     monster_id: int
-    max_hp: int
+    max_hp: Optional[int] = 0
 
     def to_scene_monster_proto(self) -> SceneMonster:
         return SceneMonster(
