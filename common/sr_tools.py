@@ -3,7 +3,7 @@ from pydantic import BaseModel, PrivateAttr
 from typing import OrderedDict, Dict, List, Optional
 from pathlib import Path
 
-from common.util import async_read_to_str, async_write_to_file
+from common.util import AsyncFs
 from common.structs.avatar import AvatarJson, MultiPathAvatar
 from common.structs.lightcone import Lightcone
 from common.structs.relic import Relic
@@ -80,7 +80,9 @@ class FreesrData(BaseModel):
             scene=self._scene,
             march_type=self._march_type,
         )
-        await async_write_to_file(PERSISTENT_FILE, persistent.model_dump_json(indent=2))
+        await AsyncFs.write_to_file(
+            PERSISTENT_FILE, persistent.model_dump_json(indent=2)
+        )
 
     async def verify_lineup(self) -> None:
         lineup_len = len(self._lineups)
@@ -94,8 +96,8 @@ class FreesrData(BaseModel):
     @staticmethod
     async def load() -> "FreesrData":
         freesr_data_json, persistent_json = await asyncio.gather(
-            async_read_to_str(FREESR_FILE),
-            async_read_to_str(PERSISTENT_FILE),
+            AsyncFs.read_to_str(FREESR_FILE),
+            AsyncFs.read_to_str(PERSISTENT_FILE),
         )
 
         freesr_data = FreesrData.model_validate_json(freesr_data_json)
@@ -138,6 +140,7 @@ class FreesrData(BaseModel):
         self._scene = new._scene
         self._main_character = new._main_character
         self._march_type = new._march_type
+
 
 # import asyncio
 # TEST = asyncio.run(FreesrData.load())
