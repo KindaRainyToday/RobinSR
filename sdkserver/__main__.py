@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
+import json
 from typing import Dict
 import uvicorn
 import httpx
@@ -34,17 +35,22 @@ class AppState:
 
         self.hotfix_map[version] = version_config
 
-        json_str = VersionConfig.model_validate(self.hotfix_map).model_dump_json(
-            indent=2
-        )
-        await AsyncFs.write_to_file(CONFIG_PATH, json_str)
+        # this is fucking stupid but i can't find any way to dump a TypeAdapter with pydantic
+        to_dump = {}
+        for k, v in self.hotfix_map.items():
+            to_dump[k] = v.model_dump()
+
+        if len(to_dump) > 0:
+            json_str = json.dumps(to_dump, indent=2)
+            await AsyncFs.write_to_file(CONFIG_PATH, json_str)
 
         return self.hotfix_map[version]
 
 
 if __name__ == "__main__":
+    fuckass = AppState()
     app = FastAPI()
-    app.state.fuckass = AppState()
+    app.state.fuckass = fuckass
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -56,7 +62,7 @@ if __name__ == "__main__":
     app.include_router(auth_router)
     app.include_router(sr_tools_router)
 
-    h_map = app.state.fuckass.hotfix_map
+    h_map = fuckass.hotfix_map
     h_cnt, h_keys = (len(h_map), h_map.keys())
     Logger.info(f"loaded {h_cnt} hotfix(es): {h_keys}")
 

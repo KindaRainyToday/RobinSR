@@ -2,6 +2,7 @@ from typing import Dict, Optional
 from proto import GateServer
 from pydantic import BaseModel, TypeAdapter
 from common.util import SyncFs, Logger
+import asyncio
 import httpx
 import base64
 
@@ -71,11 +72,8 @@ class VersionConfig(BaseModel):
         Logger.info(f"Fetching hotfix: {url}")
 
         try:
-            async with client.get(url) as resp:
-                if resp.status != 200:
-                    Logger.error(f"Failed to fetch hotfix: {resp.status}")
-                    return None
-                encoded = await resp.text()
+            resp = await client.get(url)
+            encoded = resp.text
 
             decoded_bytes = base64.b64decode(encoded)
             gateserver = GateServer().parse(decoded_bytes)
@@ -84,7 +82,7 @@ class VersionConfig(BaseModel):
                 Logger.error("Empty hotfix URLs received.")
                 return None
 
-            Logger.info(f"Hotfix data: {repr(gateserver)}")
+            Logger.info(f"fetching hotfix success: {gateserver}")
 
             return VersionConfig(
                 asset_bundle_url=gateserver.asset_bundle_url,
