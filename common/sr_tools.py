@@ -2,6 +2,7 @@ from proto import Avatar, AvatarSkillTree, MultiPathAvatarInfo
 from pydantic import BaseModel, PrivateAttr
 from typing import OrderedDict, Dict, List, Optional
 from pathlib import Path
+import asyncio
 
 from common.util import AsyncFs
 from common.structs.avatar import AvatarJson, MultiPathAvatar
@@ -110,15 +111,14 @@ class FreesrData(BaseModel):
         freesr_data._march_type = persistent_data.march_type
 
         # clean up unequipped stuff
-        avatar_count = len(freesr_data.avatars)
         lc_count = len(freesr_data.lightcones)
         relic_count = len(freesr_data.relics)
 
-        if lc_count > avatar_count * 2:
+        if lc_count > 1500:
             freesr_data.lightcones = [
                 lc for lc in freesr_data.lightcones if lc.equip_avatar != 0
             ]
-        if relic_count > avatar_count * 6:
+        if relic_count > 2000:
             freesr_data.relics = [r for r in freesr_data.relics if r.equip_avatar != 0]
 
         march_t = freesr_data._march_type.to_int()
@@ -140,13 +140,3 @@ class FreesrData(BaseModel):
         self._scene = new._scene
         self._main_character = new._main_character
         self._march_type = new._march_type
-
-
-# import asyncio
-# TEST = asyncio.run(FreesrData.load())
-# print(repr(TEST.get_avatar_proto(1001)))
-# print(repr(TEST.get_avatar_multipath_proto(1224)))
-# print(repr(TEST.get_avatar_multipath_proto(1221)))
-# print(repr(TEST.get_multi_path_info()))
-# asyncio.run(TEST.update())
-# asyncio.run(TEST.save_persistent())

@@ -1,5 +1,17 @@
-{  
+{
   "OSPRODWin3.3.0": {
+    "asset_bundle_url": "",
+    "ex_resource_url": "",
+    "lua_url": "",
+    "ifix_url": ""
+  },
+  "OSBETAWin9.9.9": {
+    "asset_bundle_url": "",
+    "ex_resource_url": "",
+    "lua_url": "",
+    "ifix_url": ""
+  },
+  "OSBETAWin3.2.52": {
     "asset_bundle_url": "",
     "ex_resource_url": "",
     "lua_url": "",
