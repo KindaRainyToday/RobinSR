@@ -218,7 +218,7 @@ class AvatarJson(BaseModel):
 
         return [
             player.avatars[avatar_id].to_lineup_avatar_proto(slot)
-            for slot, avatar_id in player.lineups.items()
+            for slot, avatar_id in player._lineups.items()
             if slot < 4 and avatar_id > 0 and avatar_id in avatar_ids
         ]
 

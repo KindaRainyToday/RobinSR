@@ -1,4 +1,14 @@
 from dataclasses import dataclass
+from gameserver.net.handlers.authentication import *
+from gameserver.net.handlers.avatar import *
+from gameserver.net.handlers.chat import *
+from gameserver.net.handlers.inventory import *
+from gameserver.net.handlers.lineup import *
+from gameserver.net.handlers.mission import *
+from gameserver.net.handlers.player import *
+from gameserver.net.handlers.scene import *
+
+from proto import *
 import struct
 
 HEAD_MAGIC = bytes([0x9D, 0x74, 0xC7, 0x14])
@@ -84,3 +94,194 @@ class NetPacket:
         out[body_end : body_end + 4] = TAIL_MAGIC
 
         return bytes(out)
+
+
+# auto-generated <3
+RSP_MAP = {
+    CmdID.PlayerGetTokenCsReq: {
+        "req_msg": PlayerGetTokenCsReq,
+        "rsp_msg": PlayerGetTokenScRsp,
+        "rsp_cmd": CmdID.PlayerGetTokenScRsp,
+        "handler": on_player_get_token_cs_req,
+    },
+    CmdID.PlayerLoginCsReq: {
+        "req_msg": PlayerLoginCsReq,
+        "rsp_msg": PlayerLoginScRsp,
+        "rsp_cmd": CmdID.PlayerLoginScRsp,
+        "handler": on_player_login_cs_req,
+    },
+    CmdID.GetMissionStatusCsReq: {
+        "req_msg": GetMissionStatusCsReq,
+        "rsp_msg": GetMissionStatusScRsp,
+        "rsp_cmd": CmdID.GetMissionStatusScRsp,
+        "handler": on_get_mission_status_cs_req,
+    },
+    CmdID.GetBasicInfoCsReq: {
+        "req_msg": GetBasicInfoCsReq,
+        "rsp_msg": GetBasicInfoScRsp,
+        "rsp_cmd": CmdID.GetBasicInfoScRsp,
+        "handler": on_get_basic_info_cs_req,
+    },
+    CmdID.GetMultiPathAvatarInfoCsReq: {
+        "req_msg": GetMultiPathAvatarInfoCsReq,
+        "rsp_msg": GetMultiPathAvatarInfoScRsp,
+        "rsp_cmd": CmdID.GetMultiPathAvatarInfoScRsp,
+        "handler": on_get_multi_path_avatar_info_cs_req,
+    },
+    CmdID.GetAvatarDataCsReq: {
+        "req_msg": GetAvatarDataCsReq,
+        "rsp_msg": GetAvatarDataScRsp,
+        "rsp_cmd": CmdID.GetAvatarDataScRsp,
+        "handler": on_get_avatar_data_cs_req,
+    },
+    CmdID.GetAllLineupDataCsReq: {
+        "req_msg": GetAllLineupDataCsReq,
+        "rsp_msg": GetAllLineupDataScRsp,
+        "rsp_cmd": CmdID.GetAllLineupDataScRsp,
+        "handler": on_get_all_lineup_data_cs_req,
+    },
+    CmdID.GetCurLineupDataCsReq: {
+        "req_msg": GetCurLineupDataCsReq,
+        "rsp_msg": GetCurLineupDataScRsp,
+        "rsp_cmd": CmdID.GetCurLineupDataScRsp,
+        "handler": on_get_cur_lineup_data_cs_req,
+    },
+    CmdID.GetCurSceneInfoCsReq: {
+        "req_msg": GetCurSceneInfoCsReq,
+        "rsp_msg": GetCurSceneInfoScRsp,
+        "rsp_cmd": CmdID.GetCurSceneInfoScRsp,
+        "handler": on_get_cur_scene_info_cs_req,
+    },
+    CmdID.PlayerHeartBeatCsReq: {
+        "req_msg": PlayerHeartBeatCsReq,
+        "rsp_msg": PlayerHeartBeatScRsp,
+        "rsp_cmd": CmdID.PlayerHeartBeatScRsp,
+        "handler": on_player_heart_beat_cs_req,
+    },
+    CmdID.SceneEntityMoveCsReq: {
+        "req_msg": SceneEntityMoveCsReq,
+        "rsp_msg": SceneEntityMoveScRsp,
+        "rsp_cmd": CmdID.SceneEntityMoveScRsp,
+        "handler": on_scene_entity_move_cs_req,
+    },
+    CmdID.GetBagCsReq: {
+        "req_msg": GetBagCsReq,
+        "rsp_msg": GetBagScRsp,
+        "rsp_cmd": CmdID.GetBagScRsp,
+        "handler": on_get_bag_cs_req,
+    },
+    CmdID.GetArchiveDataCsReq: {
+        "req_msg": GetArchiveDataCsReq,
+        "rsp_msg": GetArchiveDataScRsp,
+        "rsp_cmd": CmdID.GetArchiveDataScRsp,
+        "handler": on_get_archive_data_cs_req,
+    },
+    CmdID.DressAvatarCsReq: {
+        "req_msg": DressAvatarCsReq,
+        "rsp_msg": DressAvatarScRsp,
+        "rsp_cmd": CmdID.DressAvatarScRsp,
+        "handler": on_dress_avatar_cs_req,
+    },
+    CmdID.TakeOffEquipmentCsReq: {
+        "req_msg": TakeOffEquipmentCsReq,
+        "rsp_msg": TakeOffEquipmentScRsp,
+        "rsp_cmd": CmdID.TakeOffEquipmentScRsp,
+        "handler": on_take_off_equipment_cs_req,
+    },
+    CmdID.DressRelicAvatarCsReq: {
+        "req_msg": DressRelicAvatarCsReq,
+        "rsp_msg": DressRelicAvatarScRsp,
+        "rsp_cmd": CmdID.DressRelicAvatarScRsp,
+        "handler": on_dress_relic_avatar_cs_req,
+    },
+    CmdID.TakeOffRelicCsReq: {
+        "req_msg": TakeOffRelicCsReq,
+        "rsp_msg": TakeOffRelicScRsp,
+        "rsp_cmd": CmdID.TakeOffRelicScRsp,
+        "handler": on_take_off_relic_cs_req,
+    },
+    CmdID.RankUpAvatarCsReq: {
+        "req_msg": RankUpAvatarCsReq,
+        "rsp_msg": RankUpAvatarScRsp,
+        "rsp_cmd": CmdID.RankUpAvatarScRsp,
+        "handler": on_rank_up_avatar_cs_req,
+    },
+    CmdID.SendMsgCsReq: {
+        "req_msg": SendMsgCsReq,
+        "rsp_msg": SendMsgScRsp,
+        "rsp_cmd": CmdID.SendMsgScRsp,
+        "handler": on_send_msg_cs_req,
+    },
+    CmdID.GetPrivateChatHistoryCsReq: {
+        "req_msg": GetPrivateChatHistoryCsReq,
+        "rsp_msg": GetPrivateChatHistoryScRsp,
+        "rsp_cmd": CmdID.GetPrivateChatHistoryScRsp,
+        "handler": on_get_private_chat_history_cs_req,
+    },
+    CmdID.GetFriendListInfoCsReq: {
+        "req_msg": GetFriendListInfoCsReq,
+        "rsp_msg": GetFriendListInfoScRsp,
+        "rsp_cmd": CmdID.GetFriendListInfoScRsp,
+        "handler": on_get_friend_list_info_cs_req,
+    },
+    CmdID.GetFriendLoginInfoCsReq: {
+        "req_msg": GetFriendLoginInfoCsReq,
+        "rsp_msg": GetFriendLoginInfoScRsp,
+        "rsp_cmd": CmdID.GetFriendLoginInfoScRsp,
+        "handler": on_get_friend_login_info_cs_req,
+    },
+    CmdID.JoinLineupCsReq: {
+        "req_msg": JoinLineupCsReq,
+        "rsp_msg": JoinLineupScRsp,
+        "rsp_cmd": CmdID.JoinLineupScRsp,
+        "handler": on_join_lineup_cs_req,
+    },
+    CmdID.ChangeLineupLeaderCsReq: {
+        "req_msg": ChangeLineupLeaderCsReq,
+        "rsp_msg": ChangeLineupLeaderScRsp,
+        "rsp_cmd": CmdID.ChangeLineupLeaderScRsp,
+        "handler": on_change_lineup_leader_cs_req,
+    },
+    CmdID.ReplaceLineupCsReq: {
+        "req_msg": ReplaceLineupCsReq,
+        "rsp_msg": ReplaceLineupScRsp,
+        "rsp_cmd": CmdID.ReplaceLineupScRsp,
+        "handler": on_replace_lineup_cs_req,
+    },
+    CmdID.QuitLineupCsReq: {
+        "req_msg": QuitLineupCsReq,
+        "rsp_msg": QuitLineupScRsp,
+        "rsp_cmd": CmdID.QuitLineupScRsp,
+        "handler": on_quit_lineup_cs_req,
+    },
+    CmdID.GetEnteredSceneCsReq: {
+        "req_msg": GetEnteredSceneCsReq,
+        "rsp_msg": GetEnteredSceneScRsp,
+        "rsp_cmd": CmdID.GetEnteredSceneScRsp,
+        "handler": on_get_entered_scene_cs_req,
+    },
+    CmdID.GetSceneMapInfoCsReq: {
+        "req_msg": GetSceneMapInfoCsReq,
+        "rsp_msg": GetSceneMapInfoScRsp,
+        "rsp_cmd": CmdID.GetSceneMapInfoScRsp,
+        "handler": on_get_scene_map_info_cs_req,
+    },
+    CmdID.EnterSceneCsReq: {
+        "req_msg": EnterSceneCsReq,
+        "rsp_msg": EnterSceneScRsp,
+        "rsp_cmd": CmdID.EnterSceneScRsp,
+        "handler": on_enter_scene_cs_req,
+    },
+    CmdID.PlayerLoginFinishCsReq: {
+        "req_msg": PlayerLoginFinishCsReq,
+        "rsp_msg": PlayerLoginFinishScRsp,
+        "rsp_cmd": CmdID.PlayerLoginFinishScRsp,
+        "handler": on_player_login_finish_cs_req,
+    },
+    CmdID.GetBigDataAllRecommendCsReq: {
+        "req_msg": GetBigDataAllRecommendCsReq,
+        "rsp_msg": GetBigDataAllRecommendScRsp,
+        "rsp_cmd": CmdID.GetBigDataAllRecommendScRsp,
+        "handler": on_get_big_data_all_recommend_cs_req,
+    },
+}

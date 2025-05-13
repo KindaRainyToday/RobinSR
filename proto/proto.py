@@ -9608,7 +9608,7 @@ class GetFriendLoginInfoCsReq(betterproto.Message):
 
 @dataclass
 class GetFriendLoginInfoScRsp(betterproto.Message):
-    dbndomdmmgf: List[int] = betterproto.uint32_field(15)
+    friend_uid_list: List[int] = betterproto.uint32_field(15)
     bohnbjmmkbo: bool = betterproto.bool_field(14)
     retcode: int = betterproto.uint32_field(1)
     iihdbinopmg: List[int] = betterproto.uint32_field(5)
@@ -16120,15 +16120,17 @@ class GetBigDataRecommendScRsp(betterproto.Message):
 
 
 @dataclass
-class KNNFPFKCABE(betterproto.Message):
+class RecomendedAvatarInfo(betterproto.Message):
     avatar_id_list: List[int] = betterproto.uint32_field(5)
-    dhjhibcdnba: int = betterproto.uint32_field(14)
-    cfiphfhojfp: int = betterproto.uint32_field(12)
+    relic_set_id: int = betterproto.uint32_field(14)
+    recommend_avatar_id: int = betterproto.uint32_field(12)
 
 
 @dataclass
-class PIIIPHEFDJO(betterproto.Message):
-    apfecoopnkn: List["KNNFPFKCABE"] = betterproto.message_field(12)
+class BigDataRecommendRelicAvatar(betterproto.Message):
+    recommend_avatar_info_list: List["RecomendedAvatarInfo"] = (
+        betterproto.message_field(12)
+    )
 
 
 @dataclass
@@ -16145,7 +16147,7 @@ class GHLEDKFIIJH(betterproto.Message):
 
 
 @dataclass
-class OFNGPLJKLOJ(betterproto.Message):
+class RecommendedRelicInfo(betterproto.Message):
     kkcmfgmhimo: List["GHLEDKFIIJH"] = betterproto.message_field(8)
     fbbajbinglb: List["GHLEDKFIIJH"] = betterproto.message_field(1)
     avatar_id: int = betterproto.uint32_field(7)
@@ -16156,8 +16158,10 @@ class OFNGPLJKLOJ(betterproto.Message):
 
 
 @dataclass
-class MKJALMKMPGL(betterproto.Message):
-    bfdmginboib: List["OFNGPLJKLOJ"] = betterproto.message_field(14)
+class BigDataRecommendAvatarRelic(betterproto.Message):
+    recomended_relic_info_list: List["RecommendedRelicInfo"] = (
+        betterproto.message_field(14)
+    )
 
 
 @dataclass
@@ -16167,8 +16171,8 @@ class GetBigDataAllRecommendCsReq(betterproto.Message):
 
 @dataclass
 class GetBigDataAllRecommendScRsp(betterproto.Message):
-    dklbnbdpmpo: "PIIIPHEFDJO" = betterproto.message_field(14)
-    pfopjpjkklk: "MKJALMKMPGL" = betterproto.message_field(13)
+    relic_avatar: "BigDataRecommendRelicAvatar" = betterproto.message_field(14)
+    avatar_relic: "BigDataRecommendAvatarRelic" = betterproto.message_field(13)
     big_data_recommend_type: "BigDataRecommendType" = betterproto.enum_field(2)
     retcode: int = betterproto.uint32_field(15)
 

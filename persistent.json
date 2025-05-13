@@ -1,8 +1,8 @@
 {
   "lineups": {
-    "0": 1403,
+    "0": 1309,
     "1": 1407,
-    "2": 8001,
+    "2": 1221,
     "3": 1405
   },
   "position": {
@@ -16,6 +16,6 @@
     "floor_id": 20411001,
     "entry_id": 2041101
   },
-  "main_character": "FemaleRemembrance",
+  "main_character": "FemaleHarmony",
   "march_type": "MarchHunt"
 }

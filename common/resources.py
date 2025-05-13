@@ -3,6 +3,9 @@ from enum import IntEnum
 from typing import List, Dict
 from pathlib import Path
 
+# i cba making the fields snake_case
+# go make a pull request if that annoys you
+
 
 class Vector(BaseModel):
     x: int

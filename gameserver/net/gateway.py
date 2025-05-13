@@ -27,8 +27,14 @@ class Gateway:
         self.id_counter += 1
         return self.id_counter, random.randint(0, 0xFFFFFFFF)
 
-    def drop_kcp_session(self, conv_id: int, checked: Optional[bool]) -> None:
-        if conv_id in self.sessions or checked == True:
+    # not doing anything with the token rn
+    def drop_kcp_session(
+        self,
+        conv_id: int,
+        existance_checked: Optional[bool] = None,
+        _token: Optional[int] = None,
+    ) -> None:
+        if existance_checked == True or conv_id in self.sessions:
             del self.sessions[conv_id]
             Logger.info(f"Dropped session with conv_id={conv_id}")
         else:
@@ -64,7 +70,7 @@ class Gateway:
         session = self.sessions.get(conv_id)
 
         if session and session.should_drop:
-            self.drop_kcp_session(conv_id, checked=True)
+            self.drop_kcp_session(conv_id, existance_checked=True)
         elif session:
             await session.consume(data)
         else:
@@ -94,9 +100,10 @@ class Gateway:
                 # we do this because datagram_received cannot be async
                 self.loop.create_task(self.dispatch_received(data, addr))
 
-            async def dispatch_received(self, data: bytes, addr: Tuple[str, int]) -> None:
+            async def dispatch_received(
+                self, data: bytes, addr: Tuple[str, int]
+            ) -> None:
                 packet_length = len(data)
-                Logger.info(f"Received {packet_length} bytes from {addr}")
 
                 if packet_length == NET_OPERATION_SIZE:
                     await gateway.process_net_operation(

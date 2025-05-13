@@ -16,7 +16,7 @@ class Lightcone(BaseModel):
 
     def to_equipment_proto(self) -> Equipment:
         return Equipment(
-            equip_avatar_id=self.equip_avatar,
+            dress_avatar_id=self.equip_avatar,
             exp=0,
             is_protected=False,
             level=self.level,

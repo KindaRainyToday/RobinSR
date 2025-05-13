@@ -2,7 +2,8 @@ from common.sr_tools import FreesrData
 from asyncio import DatagramTransport
 from kcp import Kcp
 from gameserver.util import cur_timestamp_secs
-from gameserver.net.packet import NetPacket
+from gameserver.net.packet import NetPacket, RSP_MAP
+from gameserver.net.handlers.dummy import DUMMY_MAP
 from typing import List, Tuple
 from proto import CmdID, PlayerSyncScNotify, AvatarSync
 from common.util import Logger
@@ -60,22 +61,17 @@ class PlayerSession:
 
         self.kcp.update(self.session_time())
 
-    async def send(self, body: betterproto.Message, cmd_id: CmdID) -> None:
-        buf = bytes(body)
-        payload = NetPacket(cmd_type=int(CmdID), head=b"", body=buf).to_bytes()
-
-        self.kcp.send(payload)
-        self.kcp.flush()
-        self.kcp.update(self.session_time())
-
-    async def send_raw(self, payload: NetPacket) -> None:
+    def send_raw(self, payload: NetPacket) -> None:
         self.kcp.send(payload.to_bytes())
         self.kcp.flush()
         self.kcp.update(self.session_time())
 
-    async def sync_player(self) -> None:
-        json = self.json_data
+    def send(self, body: betterproto.Message, cmd_id: CmdID) -> None:
+        buf = bytes(body)
+        payload = NetPacket(cmd_type=int(cmd_id), head=b"", body=buf)
+        self.send_raw(payload)
 
+    def sync_player(self) -> None:
         self.send(
             cmd_id=CmdID.PlayerSyncScNotify,
             body=PlayerSyncScNotify(
@@ -89,18 +85,22 @@ class PlayerSession:
             body=PlayerSyncScNotify(
                 avatar_sync=AvatarSync(
                     avatar_list=[
-                        a.to_avatar_proto(None, []) for a in json.avatars.values() if a
+                        a.to_avatar_proto(None, [])
+                        for a in self.json_data.avatars.values()
+                        if a
                     ],
                 ),
-                multi_path_avatar_info_list=json.get_multi_path_info(),
+                multi_path_avatar_info_list=self.json_data.get_multi_path_info(),
             ),
         )
 
         self.send(
             cmd_id=CmdID.PlayerSyncScNotify,
             body=PlayerSyncScNotify(
-                relic_list=[r.to_relic_proto() for r in json.relics],
-                equipment_list=[l.to_equipment_proto() for l in json.lightcones],
+                relic_list=[r.to_relic_proto() for r in self.json_data.relics],
+                equipment_list=[
+                    l.to_equipment_proto() for l in self.json_data.lightcones
+                ],
             ),
         )
 
@@ -110,8 +110,9 @@ class PlayerSession:
                 avatar_sync=AvatarSync(
                     avatar_list=[
                         av_proto
-                        for a in json.avatars.values()
-                        if (av_proto := json.get_avatar_proto(a.avatar_id)) is not None
+                        for a in self.json_data.avatars.values()
+                        if (av_proto := self.json_data.get_avatar_proto(a.avatar_id))
+                        is not None
                     ]
                 )
             ),
@@ -125,6 +126,13 @@ class PlayerSession:
             Logger.warn(f"received unknown cmd_id: {cmd_type}")
             return
 
-        match cmd_enum:
-            case _:
-                Logger.warn(f"Unhandled cmd_id: {cmd_type}")
+        if rsp_cmd := DUMMY_MAP.get(cmd_enum):
+            self.send_raw(NetPacket(cmd_type=int(rsp_cmd), head=b"", body=b""))
+        elif rsp_dict := RSP_MAP.get(cmd_enum):
+            req_msg = rsp_dict["req_msg"]().parse(packet_body)
+            rsp_msg = rsp_dict["rsp_msg"]()
+            rsp_cmd = rsp_dict["rsp_cmd"]
+            await rsp_dict["handler"](self, req_msg, rsp_msg)
+            self.send(body=rsp_msg, cmd_id=rsp_cmd)
+        else:
+            Logger.warn(f"unhandled cmd: {cmd_enum}")

@@ -24,6 +24,10 @@ class SyncFs:
     def write_to_file(path: str, content: str) -> None:
         Path(path).write_text(content)
 
+    @staticmethod
+    def get_last_modified_time(path: str) -> int:
+        return int(Path(path).stat().st_mtime)
+
 
 class Logger:
     @staticmethod

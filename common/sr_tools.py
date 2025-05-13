@@ -4,7 +4,7 @@ from typing import OrderedDict, Dict, List, Optional
 from pathlib import Path
 import asyncio
 
-from common.util import AsyncFs
+from common.util import AsyncFs, SyncFs
 from common.structs.avatar import AvatarJson, MultiPathAvatar
 from common.structs.lightcone import Lightcone
 from common.structs.relic import Relic
@@ -26,6 +26,7 @@ class FreesrData(BaseModel):
     _scene: Scene = PrivateAttr()
     _main_character: MultiPathAvatar = PrivateAttr()
     _march_type: MultiPathAvatar = PrivateAttr()
+    _freesr_last_write: int = PrivateAttr()
 
     def get_avatar_proto(self, avatar_id: int) -> Optional[Avatar]:
         if avatar := self.avatars.get(avatar_id):
@@ -95,6 +96,10 @@ class FreesrData(BaseModel):
         await self.save_persistent()
 
     @staticmethod
+    def get_last_write_time() -> None:
+        return SyncFs.get_last_modified_time(FREESR_FILE)
+
+    @staticmethod
     async def load() -> "FreesrData":
         freesr_data_json, persistent_json = await asyncio.gather(
             AsyncFs.read_to_str(FREESR_FILE),
@@ -109,6 +114,7 @@ class FreesrData(BaseModel):
         freesr_data._scene = persistent_data.scene
         freesr_data._main_character = persistent_data.main_character
         freesr_data._march_type = persistent_data.march_type
+        freesr_data._freesr_last_write = FreesrData.get_last_write_time()
 
         # clean up unequipped stuff
         lc_count = len(freesr_data.lightcones)
@@ -130,13 +136,14 @@ class FreesrData(BaseModel):
         return freesr_data
 
     async def update(self) -> None:
-        new = await self.load()
-        self.avatars = new.avatars
-        self.lightcones = new.lightcones
-        self.relics = new.relics
-        self.battle_config = new.battle_config
-        self._lineups = new._lineups
-        self._position = new._position
-        self._scene = new._scene
-        self._main_character = new._main_character
-        self._march_type = new._march_type
+        if self.get_last_write_time() > self._freesr_last_write:
+            new = await self.load()
+            self.avatars = new.avatars
+            self.lightcones = new.lightcones
+            self.relics = new.relics
+            self.battle_config = new.battle_config
+            self._lineups = new._lineups
+            self._position = new._position
+            self._scene = new._scene
+            self._main_character = new._main_character
+            self._march_type = new._march_type

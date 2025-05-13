@@ -52,7 +52,7 @@ class Relic(BaseModel):
 
     def to_relic_proto(self) -> proto.Relic:
         return proto.Relic(
-            equip_avatar_id=self.equip_avatar,
+            dress_avatar_id=self.equip_avatar,
             exp=0,
             is_protected=False,
             level=self.level,
