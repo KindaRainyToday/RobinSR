@@ -25,8 +25,8 @@ class Monster(BaseModel):
         max_level = max((m.level for m in monsters), default=95)
 
         return SceneMonsterWave(
-            wave_id=wave_id,
-            wave_param=SceneMonsterWaveParam(
+            battle_wave_id=wave_id,
+            monster_param=SceneMonsterWaveParam(
                 level=max_level,
             ),
             monster_list=[m.to_scene_monster_proto() for m in monsters],

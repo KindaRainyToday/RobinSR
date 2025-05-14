@@ -1,6 +1,6 @@
-from proto import Avatar, AvatarSkillTree, MultiPathAvatarInfo
+from proto import Avatar, AvatarSkillTree, MultiPathAvatarInfo, BattleAvatar, BattleBuff
 from pydantic import BaseModel, PrivateAttr
-from typing import OrderedDict, Dict, List, Optional
+from typing import OrderedDict, Dict, List, Optional, Tuple
 from pathlib import Path
 import asyncio
 
@@ -36,6 +36,18 @@ class FreesrData(BaseModel):
             relics = [r for r in self.relics if r.equip_avatar == avatar_id]
 
             return avatar.to_avatar_proto(lightcone, relics)
+        return None
+
+    def get_battle_avatar_proto(
+        self, index: int, avatar_id: int
+    ) -> Optional[Tuple[BattleAvatar, List[BattleBuff]]]:
+        if avatar := self.avatars.get(avatar_id):
+            lightcone = next(
+                (l for l in self.lightcones if l.equip_avatar == avatar_id), None
+            )
+            relics = [r for r in self.relics if r.equip_avatar == avatar_id]
+
+            return avatar.to_battle_avatar_proto(index, lightcone, relics)
         return None
 
     def get_avatar_multipath_proto(

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from gameserver.net.handlers.authentication import *
 from gameserver.net.handlers.avatar import *
+from gameserver.net.handlers.battle import *
 from gameserver.net.handlers.chat import *
 from gameserver.net.handlers.inventory import *
 from gameserver.net.handlers.lineup import *
@@ -95,6 +96,10 @@ class NetPacket:
 
         return bytes(out)
 
+
+# this map only stores the class name
+# its constructed only if it's `.get()`-ed
+# see the session.on_message() implementation!
 
 # auto-generated <3
 RSP_MAP = {
@@ -253,6 +258,30 @@ RSP_MAP = {
         "rsp_msg": QuitLineupScRsp,
         "rsp_cmd": CmdID.QuitLineupScRsp,
         "handler": on_quit_lineup_cs_req,
+    },
+    CmdID.StartCocoonStageCsReq: {
+        "req_msg": StartCocoonStageCsReq,
+        "rsp_msg": StartCocoonStageScRsp,
+        "rsp_cmd": CmdID.StartCocoonStageScRsp,
+        "handler": on_start_cocoon_stage_cs_req,
+    },
+    CmdID.PVEBattleResultCsReq: {
+        "req_msg": PVEBattleResultCsReq,
+        "rsp_msg": PVEBattleResultScRsp,
+        "rsp_cmd": CmdID.PVEBattleResultScRsp,
+        "handler": on_pve_battle_result_cs_req,
+    },
+    CmdID.SceneCastSkillCsReq: {
+        "req_msg": SceneCastSkillCsReq,
+        "rsp_msg": SceneCastSkillScRsp,
+        "rsp_cmd": CmdID.SceneCastSkillScRsp,
+        "handler": on_scene_cast_skill_cs_req,
+    },
+    CmdID.QuickStartCocoonStageCsReq: {
+        "req_msg": QuickStartCocoonStageCsReq,
+        "rsp_msg": QuickStartCocoonStageScRsp,
+        "rsp_cmd": CmdID.QuickStartCocoonStageScRsp,
+        "handler": on_quick_start_cocoon_stage_cs_req,
     },
     CmdID.GetEnteredSceneCsReq: {
         "req_msg": GetEnteredSceneCsReq,

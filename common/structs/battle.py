@@ -50,7 +50,7 @@ class BattleBuffJson(BaseModel):
             id=self.id,
             level=self.level,
             wave_flag=0xFFFFFFFF,
-            owner_id=0xFFFFFFFF,
+            owner_index=0xFFFFFFFF,
             dynamic_values=dynamic_values,
         )
 

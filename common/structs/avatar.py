@@ -1,4 +1,4 @@
-from typing import OrderedDict, Dict, List, Optional
+from typing import OrderedDict, Dict, List, Optional, Tuple
 from enum import StrEnum
 from pydantic import BaseModel
 
@@ -156,7 +156,7 @@ class AvatarJson(BaseModel):
 
     def to_battle_avatar_proto(
         self, index: int, lightcone: Optional[Lightcone], relics: List[Relic]
-    ) -> tuple[BattleAvatar, List[BattleBuff]]:
+    ) -> Tuple[BattleAvatar, List[BattleBuff]]:
         skilltree_list = [
             AvatarSkillTree(point_id=k, level=v) for k, v in self.data.skills.items()
         ]
@@ -189,7 +189,7 @@ class AvatarJson(BaseModel):
         battle_buff = [
             BattleBuff(
                 wave_flag=0xFFFFFFFF,
-                owner_id=index,
+                owner_index=index,
                 level=1,
                 id=buff_id,
                 dynamic_values={"SkillIndex": 2.0},
