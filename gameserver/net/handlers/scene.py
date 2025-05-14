@@ -6,7 +6,6 @@ from gameserver.util import cur_timestamp_secs
 from typing import List, Optional
 from proto import *
 
-
 async def load_scene(
     session: "PlayerSession",
     entry_id: int,
@@ -172,10 +171,6 @@ async def load_scene(
         session.json_data._scene.entry_id = entry_id
         session.json_data._scene.floor_id = floor_id
         session.json_data._scene.plane_id = plane_id
-        session.json_data._position.x = session.json_data._position.x
-        session.json_data._position.y = session.json_data._position.y
-        session.json_data._position.z = session.json_data._position.z
-        session.json_data._position.rot_y = session.json_data._position.rot_y
         await session.json_data.save_persistent()
 
         session.send(
@@ -268,13 +263,14 @@ async def on_scene_entity_move_cs_req(
     req: SceneEntityMoveCsReq,
     _res: SceneEntityMoveScRsp,
 ) -> None:
-    if session.next_scene_save >= cur_timestamp_secs():
+    cur_time = cur_timestamp_secs()
+    if session.next_scene_save >= cur_time:
         return
 
-    session.next_scene_save = cur_timestamp_secs() + 5
+    session.next_scene_save = cur_time + 5
 
     for entity in req.entity_motion_list:
-        if entity.entity_id != 0:
+        if entity.entity_id not in [1, 2, 3, 4]:
             continue
 
         session.json_data._position.x = entity.motion.pos.x
@@ -282,7 +278,7 @@ async def on_scene_entity_move_cs_req(
         session.json_data._position.z = entity.motion.pos.z
         session.json_data._position.rot_y = entity.motion.rot.y
 
-    await session.json_data.save_persistent()
+        await session.json_data.save_persistent()
 
 
 async def on_get_entered_scene_cs_req(
