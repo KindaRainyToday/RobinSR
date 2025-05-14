@@ -2,30 +2,17 @@
 ~ Why am I doing this?
 
 ## Disclaimer
-> **This project was made for shit and giggles.**  
+> **This project was made for shit and giggles.**
+> Feel free to open an issue if you find bugs (that aren't listed in the Known Issues section) though.
 
 Anyways,
 - **I bear no liability** for any consequences resulting from using this.
 - This project is **open-source**. Do whatever you want. Just assume it's using the same license as the one in `kcp/__init__.py`, I don't care.
 
-And if you're Amizing,
-
-- You should reuse some logic from `structs/avatar.rs` for the `sr_tools.rs`.
-
-- You also have a typo, it's `Remembrance`, not `Rememberance`. Absolutely unplayable, smh.
-
-- And lastly, I'm a big fan of your idea of making response messages mutable and modifying it in the handlers. Oh and the server as a whole too, of course.
-    
-    It's a shame that Python doesn't have mutable references and you have to inline every single thing.
-    
-    This is why there are long ass `session.json_data.something[..].whatever = value` everywhere instead of just assigning `session.json_data` to a variable and reuse it.
-    
-    Fuck you, Python.
-
 ## Features
-***EVERYTHING*** in Amizing25's RobinSR (almost). Currently only battle, gacha, and mail isn't implemented. Everything else (lineup, inventory, autohotfix, commands, etc.) works. Do check **Known Issues** section if you're curious about the more technical ones.
+***EVERYTHING*** in Amizing25's RobinSR.
 
-Oh and I haven't and don't plan to implement `freesr-data.json` autoreload on replace. Shouldn't a big deal, it'll autoreload on entering battle if the file changed.
+Do check **Known Issues & Limitations** section if you're curious about some details.
 
 Other than that, it's deadass just a near 1:1 translation to Python. ***Deadass.*** See, I even said it twice.
 
@@ -47,8 +34,6 @@ python -m gameserver
 python -m sdkserver
 ```
 
-(btw i haven't made the requirements.txt yet, i'll do it after i've finished all modules)
-
 ### 3. Traffic Forwarding
 
 [FireflySR.Tool.Proxy](https://git.xeondev.com/YYHEggEgg/FireflySR.Tool.Proxy/archive/v2.0.0.zip)
@@ -63,18 +48,26 @@ Because the `DatagramTransport.sendto()` is already nonblocking without async.
 ### 3. Why is the `PlayerSession.on_message()` and dummy handling so sexy, considering Python's lack of macros?
 Because I am a Python God. 
 
-## Known Issues
+## Known Issues & Limitations
 - Session doesn't get cleaned up if the client doesn't send the logout packet.
 
     This can easily be band-aid fixed by adding a timeout. But since it's just a singleplayer server, just close the server, lol.
 
 - Certain exceptions in gameserver can stop it from receiving packets. You need to restart the server when that happens.
 
-- In SceneEntityMove handler, it should update the persistent's position. Right now it doesn't. I made a fix but haven't tested it yet.
+- Simulated Universe battle isn't implemented. I've only tested with MoC but PF and AS should work just fine.
 
-- Sending chats doesn't update the chat list, but commands still work properly. So this is not really an issue... unless you a have mental disorder called OCD. If you do, stay the fuck away from Python, go Rust.
+- Sending chats doesn't update the chat list. Commands still work properly though. Not really an issue unless you a have mental disorder called OCD. If you do, stay the fuck away from Python, go Rust.
 
-- Map keeps on loading forever... Well I don't give a shit. Feel free to open an issue/PR if you figure out where I fucked it up though.
+- Map keeps on loading forever.
+
+    ...Well I don't give a shit. Feel free to open an issue/PR if you figure out where I fucked it up though.
+
+- Gacha doesn't work properly. My opinion is the same as the one regarding the previous point.
+
+- SceneCastSkill (using techniques) is pretty fucked, especially Castorice. Just enable techniques through srtools website instead of using it ingame.
+
+- The srtools-data file doesn't autoreload when it gets modified. However, entering battle (or using a command) will reload it.
 
 ## Acknowledgements
 - Xeon, for the original RobinSR

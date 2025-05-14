@@ -6,12 +6,13 @@ from random import randint
 from proto import *
 
 
-# why is this even async in the original code?
-def create_battle_info(
+async def create_battle_info(
     session: "PlayerSession",
     caster_id: int,
     skill_index: int,
 ) -> SceneBattleInfo:
+    await session.json_data.update()
+
     battle_info = SceneBattleInfo(
         stage_id=session.json_data.battle_config.stage_id,
         logic_random_seed=randint(0, 0xFFFFFFFF),
@@ -192,7 +193,7 @@ async def on_start_cocoon_stage_cs_req(
     rsp.prop_entity_id = req.prop_entity_id
     rsp.cocoon_id = req.cocoon_id
     rsp.wave = req.wave
-    rsp.battle_info = create_battle_info(session, 0, 0)
+    rsp.battle_info = await create_battle_info(session, 0, 0)
 
 
 async def on_quick_start_cocoon_stage_cs_req(
@@ -200,7 +201,7 @@ async def on_quick_start_cocoon_stage_cs_req(
     req: QuickStartCocoonStageCsReq,
     rsp: QuickStartCocoonStageScRsp,
 ) -> None:
-    battle_info = create_battle_info(session, 0, 0)
+    battle_info = await create_battle_info(session, 0, 0)
     battle_info.world_level = req.world_level
 
     rsp.cocoon_id = req.cocoon_id
@@ -232,6 +233,6 @@ async def on_scene_cast_skill_cs_req(
         Logger.warn("SceneCastSkill target is empty")
 
     res.cast_entity_id = req.cast_entity_id
-    res.battle_info = create_battle_info(
+    res.battle_info = await create_battle_info(
         session, req.attacked_by_entity_id, req.skill_index
     )
