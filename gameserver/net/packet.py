@@ -3,8 +3,10 @@ from gameserver.net.handlers.authentication import *
 from gameserver.net.handlers.avatar import *
 from gameserver.net.handlers.battle import *
 from gameserver.net.handlers.chat import *
+from gameserver.net.handlers.gacha import *
 from gameserver.net.handlers.inventory import *
 from gameserver.net.handlers.lineup import *
+from gameserver.net.handlers.mail import *
 from gameserver.net.handlers.mission import *
 from gameserver.net.handlers.player import *
 from gameserver.net.handlers.scene import *
@@ -300,6 +302,24 @@ RSP_MAP = {
         "rsp_msg": EnterSceneScRsp,
         "rsp_cmd": CmdID.EnterSceneScRsp,
         "handler": on_enter_scene_cs_req,
+    },
+    CmdID.GetMailCsReq: {
+        "req_msg": GetMailCsReq,
+        "rsp_msg": GetMailScRsp,
+        "rsp_cmd": CmdID.GetMailScRsp,
+        "handler": on_get_mail_cs_req,
+    },
+    CmdID.GetGachaInfoCsReq: {
+        "req_msg": GetGachaInfoCsReq,
+        "rsp_msg": GetGachaInfoScRsp,
+        "rsp_cmd": CmdID.GetGachaInfoScRsp,
+        "handler": on_get_gacha_info_cs_req,
+    },
+    CmdID.DoGachaCsReq: {
+        "req_msg": DoGachaCsReq,
+        "rsp_msg": DoGachaScRsp,
+        "rsp_cmd": CmdID.DoGachaScRsp,
+        "handler": on_do_gacha_cs_req,
     },
     CmdID.PlayerLoginFinishCsReq: {
         "req_msg": PlayerLoginFinishCsReq,

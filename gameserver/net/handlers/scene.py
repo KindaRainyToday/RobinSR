@@ -6,6 +6,7 @@ from gameserver.util import cur_timestamp_secs
 from typing import List, Optional
 from proto import *
 
+
 async def load_scene(
     session: "PlayerSession",
     entry_id: int,
